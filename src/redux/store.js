@@ -7,12 +7,20 @@ const store = configureStore({
   },
 });
 
+let saveTimeout;
+
 store.subscribe(() => {
-  localStorage.setItem(
-    "cart",
-    JSON.stringify(store.getState().cart)
-  );
+  clearTimeout(saveTimeout);
+
+  saveTimeout = setTimeout(() => {
+    try {
+      localStorage.setItem("cart", JSON.stringify(store.getState().cart));
+    } catch (err) {
+      console.error(
+        "Failed to save cart to localStorage. Are you using Safari?", err
+      );
+    }
+  }, 300);
 });
 
 export default store;
-
